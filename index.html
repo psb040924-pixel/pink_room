@@ -1,0 +1,78 @@
+<title>Pink Room</title>
+<style>
+  /* Layout: the picture fills the screen. No visible controls; a tap toggles the music. */
+  :root {
+    --bg: #fcfcfc;
+    color-scheme: light;
+  }
+  html, body { height: 100%; }
+  body {
+    background: var(--bg);
+    padding-inline: 16px;
+    padding-block: 0;
+    display: flex;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    cursor: pointer;
+  }
+  .stage {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .stage img {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    image-rendering: pixelated;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+</style>
+
+<div class="stage" id="stage">
+  <img src="room.jpg" width="1169" height="1280" alt="분홍색 톤의 아늑한 방 일러스트" draggable="false">
+</div>
+<audio id="bgm" src="music.mp3" preload="auto" loop playsinline></audio>
+
+<script>
+  (function () {
+    var audio = document.getElementById("bgm");
+
+    function play() {
+      try {
+        var p = audio.play();
+        if (p && typeof p.catch === "function") {
+          p.catch(function () { /* blocked until the next tap */ });
+        }
+      } catch (e) {}
+    }
+
+    /* One tap = one toggle. A tap while playing pauses; the next tap resumes. */
+    function toggle() {
+      if (audio.paused) {
+        play();
+      } else {
+        audio.pause();
+      }
+    }
+
+    document.addEventListener("click", toggle);
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === " " || e.key === "Enter") {
+        e.preventDefault();
+        toggle();
+      }
+    });
+
+    /* Some browsers allow playback without a tap; try once on load. */
+    play();
+  })();
+</script>
